@@ -28,6 +28,8 @@ with lines as (
          sli.sort_order,
          u.name                  as unit_name,
          u.abbreviation          as unit_abbreviation,
+         sli.unit_id,
+         sli.recipe_id,
          sli.recipe_name_snapshot,
          sli.checked_at,
          -- Called once per line and named here, so the aggregates below can
@@ -44,14 +46,21 @@ select shopping_list_id,
        item_name,
        bool_and(grams is not null) as can_combine,
        case when bool_and(grams is not null) then sum(grams) end as total_grams,
+       -- Everything numeric is cast to text. jsonb would otherwise store these as JSON
+       -- numbers, and JSON.parse on the client side turns those into IEEE doubles:
+       -- bigint ids past 2^53 lose precision, and 453.592 stops being exactly 453.592.
+       -- Text keeps both lossless, and matches how `pg` already returns bigint and
+       -- numeric columns outside of JSON.
        jsonb_agg(jsonb_build_object(
-         'id',               shopping_list_item_id,
-         'amount',           amount,
-         'unit',             unit_name,
-         'unitAbbreviation', unit_abbreviation,
-         'grams',            grams,
-         'recipeName',       recipe_name_snapshot,
-         'checkedAt',        checked_at
+        'id',                shopping_list_item_id::text,
+        'amount',            amount::text,
+        'unitId',            unit_id::text,
+        'unitName',          unit_name::text,
+        'unitAbbreviation',  unit_abbreviation::text,
+        'grams',             grams::text,
+        'recipeId',          recipe_id::text,
+        'recipeName',        recipe_name_snapshot,
+        'checkedAt',         checked_at
        ) order by sort_order) as lines
 from lines
 group by shopping_list_id, item_id, item_name;
