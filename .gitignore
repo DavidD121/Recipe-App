@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Runtime app state — recreated as [] by the dev-server storage API
-data/
+# Local overrides for DATABASE_URL / PORT
+.env
 
 # Editor directories and files
 .vscode/*

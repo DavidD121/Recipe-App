@@ -1,0 +1,21 @@
+{
+  // Node runs the .ts sources directly (type stripping), so tsc only type-checks.
+  // erasableSyntaxOnly rejects the TS features stripping can't handle: enums,
+  // namespaces and constructor parameter properties.
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "test", "vitest.config.ts"]
+}

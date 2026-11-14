@@ -1,0 +1,15 @@
+{
+  "name": "recipe-app",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w server",
+    "test": "npm test -w server",
+    "codegen": "npm run codegen -w server",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}
